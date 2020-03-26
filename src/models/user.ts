@@ -9,6 +9,7 @@ import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { Field, ID, ObjectType } from 'type-graphql'
 
 import { Contact } from './contact'
+import { Place } from './place'
 
 @ObjectType()
 @modelOptions({
@@ -40,7 +41,6 @@ export class User extends TimeStamps {
   })
   phone!: string
 
-  @Field(() => [Contact])
   @arrayProp({
     foreignField: 'user',
     localField: '_id',
@@ -52,6 +52,18 @@ export class User extends TimeStamps {
     ref: 'Contact'
   })
   contacts!: Ref<Contact>[]
+
+  @arrayProp({
+    foreignField: 'user',
+    localField: '_id',
+    options: {
+      sort: {
+        createdAt: -1
+      }
+    },
+    ref: 'Place'
+  })
+  places!: Ref<Place>[]
 
   @Field()
   createdAt!: Date

@@ -52,7 +52,6 @@ export class Contact extends TimeStamps {
   })
   user!: Ref<User>
 
-  @Field(() => [Interaction])
   @arrayProp({
     foreignField: 'contact',
     localField: '_id',

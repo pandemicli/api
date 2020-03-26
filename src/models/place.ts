@@ -58,7 +58,6 @@ export class Place extends TimeStamps {
   })
   user!: Ref<User>
 
-  @Field(() => [CheckIn])
   @arrayProp({
     foreignField: 'place',
     localField: '_id',

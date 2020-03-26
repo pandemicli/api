@@ -8,7 +8,6 @@ import { User } from './user'
 @ObjectType()
 @modelOptions({
   schemaOptions: {
-    collection: 'check_ins',
     timestamps: true
   }
 })

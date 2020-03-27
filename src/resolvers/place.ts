@@ -11,7 +11,13 @@ import {
 
 import { Place, User } from '../models'
 import { PlaceService } from '../services'
-import { CheckInArgs, PlaceInput, UpdatePlaceArgs } from '../types/graphql'
+import {
+  CheckInArgs,
+  GooglePlace,
+  PlaceInput,
+  PlaceSearchArgs,
+  UpdatePlaceArgs
+} from '../types/graphql'
 
 @Resolver(Place)
 export class PlaceResolver {
@@ -73,5 +79,13 @@ export class PlaceResolver {
     @Args() { date, id }: CheckInArgs
   ): Promise<boolean> {
     return this.service.toggleCheckIn(user, id, date)
+  }
+
+  @Query(() => [GooglePlace])
+  @Authorized()
+  searchPlaces(
+    @Args() { language, location, query }: PlaceSearchArgs
+  ): Promise<GooglePlace[]> {
+    return this.service.searchPlaces(language, query, location)
   }
 }

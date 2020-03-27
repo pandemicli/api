@@ -1,7 +1,6 @@
 import {
   arrayProp,
   getModelForClass,
-  index,
   modelOptions,
   prop,
   Ref
@@ -9,6 +8,7 @@ import {
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { Field, ID, ObjectType } from 'type-graphql'
 
+import { LocationPoint } from '../types/graphql'
 import { CheckIn } from './check-in'
 import { User } from './user'
 
@@ -17,9 +17,6 @@ import { User } from './user'
   schemaOptions: {
     timestamps: true
   }
-})
-@index({
-  location: '2d'
 })
 export class Place extends TimeStamps {
   @Field(() => ID)
@@ -37,13 +34,14 @@ export class Place extends TimeStamps {
   })
   favorite?: boolean
 
-  @Field(() => [Number], {
+  @Field(() => LocationPoint, {
     nullable: true
   })
-  @arrayProp({
-    items: Number
-  })
-  location?: number[]
+  @prop()
+  location?: {
+    latitude: number
+    longitude: number
+  }
 
   @Field({
     nullable: true

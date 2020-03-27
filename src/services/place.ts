@@ -1,10 +1,13 @@
+const { GOOGLE_API_KEY } = process.env
+
+import { Client, TextSearchRequest } from '@googlemaps/google-maps-services-js'
+import { Language } from '@googlemaps/google-maps-services-js/dist/common'
 import moment from 'moment'
 import { Service } from 'typedi'
 
 import { helpers } from '../lib'
 import { CheckInModel, Place, PlaceModel, User } from '../models'
-import { PlaceInput } from '../types/graphql'
-
+import { GooglePlace, LocationPoint, PlaceInput } from '../types/graphql'
 @Service()
 export class PlaceService {
   async places(user: User, date: string): Promise<Place[]> {
@@ -121,5 +124,40 @@ export class PlaceService {
     })
 
     return true
+  }
+
+  async searchPlaces(
+    language: Language,
+    query: string,
+    location?: LocationPoint
+  ): Promise<GooglePlace[]> {
+    const client = new Client()
+
+    const options: TextSearchRequest = {
+      params: {
+        key: GOOGLE_API_KEY,
+        language,
+        query
+      }
+    }
+
+    if (location) {
+      const { latitude, longitude } = location
+
+      options.params.location = `${latitude},${longitude}`
+    }
+
+    const response = await client.textSearch(options)
+
+    const {
+      data: { results }
+    } = response
+
+    return results.map((place) => ({
+      id: place.place_id,
+      latitude: place.geometry?.location.lat,
+      longitude: place.geometry?.location.lng,
+      name: place.name
+    })) as GooglePlace[]
   }
 }

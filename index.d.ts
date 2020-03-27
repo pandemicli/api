@@ -4,5 +4,7 @@ declare namespace NodeJS {
 
     SALT_ROUNDS: string
     TOKEN_SECRET: string
+
+    GOOGLE_API_KEY: string
   }
 }

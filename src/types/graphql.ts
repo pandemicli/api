@@ -1,6 +1,58 @@
+import { Language } from '@googlemaps/google-maps-services-js/dist/common'
 import { ArgsType, Field, InputType, ObjectType } from 'type-graphql'
 
 import { Contact, Place, User } from '../models'
+
+// location
+
+@ObjectType()
+export class LocationPoint {
+  @Field()
+  latitude!: number
+
+  @Field()
+  longitude!: number
+}
+
+@ObjectType()
+export class GooglePlace {
+  @Field()
+  id!: string
+
+  @Field()
+  name!: string
+
+  @Field()
+  latitude!: number
+
+  @Field()
+  longitude!: number
+}
+
+@InputType()
+export class LocationPointInput {
+  @Field()
+  latitude!: number
+
+  @Field()
+  longitude!: number
+}
+
+@ArgsType()
+export class PlaceSearchArgs {
+  @Field()
+  query!: string
+
+  @Field(() => String, {
+    defaultValue: 'en'
+  })
+  language!: Language
+
+  @Field({
+    nullable: true
+  })
+  location?: LocationPointInput
+}
 
 // auth
 
@@ -92,10 +144,10 @@ export class PlaceInput implements Partial<Place> {
   @Field()
   name!: string
 
-  @Field(() => [Number], {
+  @Field({
     nullable: true
   })
-  location?: number[]
+  location?: LocationPointInput
 
   @Field({
     nullable: true

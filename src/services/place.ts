@@ -7,7 +7,7 @@ import { PlaceInput } from '../types/graphql'
 
 @Service()
 export class PlaceService {
-  async getAll(user: User, date: string): Promise<Place[]> {
+  async places(user: User, date: string): Promise<Place[]> {
     const places = await PlaceModel.find({
       user
     })
@@ -45,15 +45,6 @@ export class PlaceService {
     return place
   }
 
-  async remove(user: User, id: string): Promise<boolean> {
-    await PlaceModel.findOneAndDelete({
-      _id: id,
-      user
-    })
-
-    return true
-  }
-
   async update(user: User, id: string, data: PlaceInput): Promise<Place> {
     const place = await PlaceModel.findOneAndUpdate(
       {
@@ -70,7 +61,23 @@ export class PlaceService {
       throw new Error('Place not found')
     }
 
+    const checkIn = await CheckInModel.findOne({
+      checkedInAt: moment().toDate(),
+      place
+    })
+
+    place.checkedInToday = !!checkIn
+
     return place
+  }
+
+  async remove(user: User, id: string): Promise<boolean> {
+    await PlaceModel.findOneAndDelete({
+      _id: id,
+      user
+    })
+
+    return true
   }
 
   async toggleFavorite(user: User, id: string): Promise<boolean> {

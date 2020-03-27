@@ -7,7 +7,7 @@ import { ContactInput } from '../types/graphql'
 
 @Service()
 export class ContactService {
-  async getAll(user: User, date: string): Promise<Contact[]> {
+  async contacts(user: User, date: string): Promise<Contact[]> {
     const contacts = await ContactModel.find({
       user
     })
@@ -45,15 +45,6 @@ export class ContactService {
     return contact
   }
 
-  async remove(user: User, id: string): Promise<boolean> {
-    await ContactModel.findOneAndDelete({
-      _id: id,
-      user
-    })
-
-    return true
-  }
-
   async update(user: User, id: string, data: ContactInput): Promise<Contact> {
     const contact = await ContactModel.findOneAndUpdate(
       {
@@ -70,30 +61,23 @@ export class ContactService {
       throw new Error('Contact not found')
     }
 
+    const interaction = await InteractionModel.findOne({
+      contact,
+      interactedAt: moment().toDate()
+    })
+
+    contact.interactedToday = !!interaction
+
     return contact
   }
 
-  async sync(user: User, data: ContactInput[]): Promise<Contact[]> {
-    const contacts = await Promise.all(
-      data.map(({ deviceId, name, phone }) =>
-        ContactModel.findOneAndUpdate(
-          {
-            deviceId,
-            user
-          },
-          {
-            name,
-            phone
-          },
-          {
-            new: true,
-            upsert: true
-          }
-        )
-      )
-    )
+  async remove(user: User, id: string): Promise<boolean> {
+    await ContactModel.findOneAndDelete({
+      _id: id,
+      user
+    })
 
-    return contacts
+    return true
   }
 
   async toggleFavorite(user: User, id: string): Promise<boolean> {
@@ -141,5 +125,28 @@ export class ContactService {
     })
 
     return true
+  }
+
+  async sync(user: User, data: ContactInput[]): Promise<Contact[]> {
+    const contacts = await Promise.all(
+      data.map(({ deviceId, name, phone }) =>
+        ContactModel.findOneAndUpdate(
+          {
+            deviceId,
+            user
+          },
+          {
+            name,
+            phone
+          },
+          {
+            new: true,
+            upsert: true
+          }
+        )
+      )
+    )
+
+    return contacts
   }
 }

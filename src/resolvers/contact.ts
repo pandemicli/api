@@ -32,7 +32,7 @@ export class ContactResolver {
     })
     date: string
   ): Promise<Contact[]> {
-    return this.service.getAll(user, date)
+    return this.service.contacts(user, date)
   }
 
   @Mutation(() => Contact)
@@ -44,6 +44,15 @@ export class ContactResolver {
     return this.service.create(user, contact)
   }
 
+  @Mutation(() => Contact)
+  @Authorized()
+  updateContact(
+    @Ctx('user') user: User,
+    @Args() { contact, id }: UpdateContactArgs
+  ): Promise<Contact> {
+    return this.service.update(user, id, contact)
+  }
+
   @Mutation(() => Boolean)
   @Authorized()
   removeContact(
@@ -51,15 +60,6 @@ export class ContactResolver {
     @Arg('id') id: string
   ): Promise<boolean> {
     return this.service.remove(user, id)
-  }
-
-  @Mutation(() => [Contact])
-  @Authorized()
-  syncContacts(
-    @Ctx('user') user: User,
-    @Args() { contacts }: SyncContactsArgs
-  ): Promise<Contact[]> {
-    return this.service.sync(user, contacts)
   }
 
   @Mutation(() => Boolean)
@@ -80,12 +80,12 @@ export class ContactResolver {
     return this.service.toggleInteraction(user, id, date)
   }
 
-  @Mutation(() => Contact)
+  @Mutation(() => [Contact])
   @Authorized()
-  updateContact(
+  syncContacts(
     @Ctx('user') user: User,
-    @Args() { contact, id }: UpdateContactArgs
-  ): Promise<Contact> {
-    return this.service.update(user, id, contact)
+    @Args() { contacts }: SyncContactsArgs
+  ): Promise<Contact[]> {
+    return this.service.sync(user, contacts)
   }
 }

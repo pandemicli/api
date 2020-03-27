@@ -27,7 +27,7 @@ export class PlaceResolver {
     })
     date: string
   ): Promise<Place[]> {
-    return this.service.getAll(user, date)
+    return this.service.places(user, date)
   }
 
   @Mutation(() => Place)
@@ -37,6 +37,15 @@ export class PlaceResolver {
     @Arg('place') place: PlaceInput
   ): Promise<Place> {
     return this.service.create(user, place)
+  }
+
+  @Mutation(() => Place)
+  @Authorized()
+  updatePlace(
+    @Ctx('user') user: User,
+    @Args() { id, place }: UpdatePlaceArgs
+  ): Promise<Place> {
+    return this.service.update(user, id, place)
   }
 
   @Mutation(() => Boolean)
@@ -64,14 +73,5 @@ export class PlaceResolver {
     @Args() { date, id }: CheckInArgs
   ): Promise<boolean> {
     return this.service.toggleCheckIn(user, id, date)
-  }
-
-  @Mutation(() => Place)
-  @Authorized()
-  updatePlace(
-    @Ctx('user') user: User,
-    @Args() { id, place }: UpdatePlaceArgs
-  ): Promise<Place> {
-    return this.service.update(user, id, place)
   }
 }

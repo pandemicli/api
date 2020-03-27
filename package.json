@@ -24,6 +24,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.9.6",
+    "shortid": "^2.2.15",
     "type-graphql": "^0.17.6",
     "typedi": "^0.8.0"
   },
@@ -32,6 +33,7 @@
     "@types/jsonwebtoken": "^8.3.8",
     "@types/lodash": "^4.14.149",
     "@types/mongoose": "^5.7.7",
+    "@types/shortid": "^0.0.29",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
     "env-cmd": "^10.1.0",

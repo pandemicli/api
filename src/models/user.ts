@@ -6,6 +6,7 @@ import {
   Ref
 } from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
+import shortid from 'shortid'
 import { Field, ID, ObjectType } from 'type-graphql'
 
 import { Contact } from './contact'
@@ -20,6 +21,12 @@ import { Place } from './place'
 export class User extends TimeStamps {
   @Field(() => ID)
   id!: string
+
+  @Field()
+  @prop({
+    default: shortid.generate
+  })
+  code!: string
 
   @Field()
   @prop({

@@ -2,7 +2,13 @@ import moment from 'moment'
 import { Service } from 'typedi'
 
 import { helpers } from '../lib'
-import { Contact, ContactModel, InteractionModel, User } from '../models'
+import {
+  Contact,
+  ContactModel,
+  InteractionModel,
+  User,
+  UserModel
+} from '../models'
 import { ContactInput } from '../types/graphql'
 
 @Service()
@@ -148,5 +154,27 @@ export class ContactService {
     )
 
     return contacts
+  }
+
+  async add(user: User, code: string): Promise<Contact> {
+    const otherUser = await UserModel.findOne({
+      code
+    })
+
+    if (!otherUser) {
+      throw new Error('Invalid code')
+    }
+
+    const { name, phone } = otherUser
+
+    const contact = await ContactModel.create({
+      name,
+      phone,
+      user
+    })
+
+    contact.interactedToday = false
+
+    return contact
   }
 }

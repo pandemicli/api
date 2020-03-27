@@ -1,22 +1,9 @@
 import moment from 'moment'
-import {
-  Arg,
-  Args,
-  Authorized,
-  Ctx,
-  Mutation,
-  Query,
-  Resolver
-} from 'type-graphql'
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 
 import { Contact, User } from '../models'
 import { ContactService } from '../services'
-import {
-  ContactInput,
-  InteractionArgs,
-  SyncContactsArgs,
-  UpdateContactArgs
-} from '../types/graphql'
+import { ContactInput } from '../types/graphql'
 
 @Resolver(Contact)
 export class ContactResolver {
@@ -48,7 +35,8 @@ export class ContactResolver {
   @Authorized()
   updateContact(
     @Ctx('user') user: User,
-    @Args() { contact, id }: UpdateContactArgs
+    @Arg('id') id: string,
+    @Arg('contact') contact: ContactInput
   ): Promise<Contact> {
     return this.service.update(user, id, contact)
   }
@@ -75,7 +63,8 @@ export class ContactResolver {
   @Authorized()
   toggleInteraction(
     @Ctx('user') user: User,
-    @Args() { date, id }: InteractionArgs
+    @Arg('id') id: string,
+    @Arg('date') date: string
   ): Promise<boolean> {
     return this.service.toggleInteraction(user, id, date)
   }
@@ -84,7 +73,7 @@ export class ContactResolver {
   @Authorized()
   syncContacts(
     @Ctx('user') user: User,
-    @Args() { contacts }: SyncContactsArgs
+    @Arg('contacts', () => [ContactInput]) contacts: ContactInput[]
   ): Promise<Contact[]> {
     return this.service.sync(user, contacts)
   }

@@ -1,9 +1,17 @@
-import { Language } from '@googlemaps/google-maps-services-js/dist/common'
-import { ArgsType, Field, InputType, ObjectType } from 'type-graphql'
+import { Field, InputType, ObjectType } from 'type-graphql'
 
 import { Contact, Place, User } from '../models'
 
 // location
+
+@InputType()
+export class LocationPointInput {
+  @Field()
+  latitude!: number
+
+  @Field()
+  longitude!: number
+}
 
 @ObjectType()
 export class LocationPoint {
@@ -29,56 +37,7 @@ export class GooglePlace {
   longitude!: number
 }
 
-@InputType()
-export class LocationPointInput {
-  @Field()
-  latitude!: number
-
-  @Field()
-  longitude!: number
-}
-
-@ArgsType()
-export class PlaceSearchArgs {
-  @Field()
-  query!: string
-
-  @Field(() => String, {
-    defaultValue: 'en'
-  })
-  language!: Language
-
-  @Field({
-    nullable: true
-  })
-  location?: LocationPointInput
-}
-
 // auth
-
-@ArgsType()
-export class SignInArgs {
-  @Field()
-  phone!: string
-}
-
-@ArgsType()
-export class SignUpArgs {
-  @Field()
-  email!: string
-
-  @Field()
-  name!: string
-
-  @Field()
-  phone!: string
-}
-
-@ArgsType()
-export class VerifyArgs {
-  @Field()
-  code!: string
-}
 
 @ObjectType()
 export class AuthResult {
@@ -107,36 +66,6 @@ export class ContactInput implements Partial<Contact> {
   deviceId?: string
 }
 
-@ArgsType()
-export class CreateContactArgs {
-  @Field()
-  contact!: ContactInput
-}
-
-@ArgsType()
-export class UpdateContactArgs {
-  @Field()
-  id!: string
-
-  @Field()
-  contact!: ContactInput
-}
-
-@ArgsType()
-export class SyncContactsArgs {
-  @Field(() => [ContactInput])
-  contacts!: ContactInput[]
-}
-
-@ArgsType()
-export class InteractionArgs {
-  @Field()
-  id!: string
-
-  @Field()
-  date!: string
-}
-
 // places
 
 @InputType()
@@ -153,30 +82,6 @@ export class PlaceInput implements Partial<Place> {
     nullable: true
   })
   googlePlaceId?: string
-}
-
-@ArgsType()
-export class CreatePlaceArgs {
-  @Field()
-  place!: PlaceInput
-}
-
-@ArgsType()
-export class UpdatePlaceArgs {
-  @Field()
-  id!: string
-
-  @Field()
-  place!: PlaceInput
-}
-
-@ArgsType()
-export class CheckInArgs {
-  @Field()
-  id!: string
-
-  @Field()
-  date!: string
 }
 
 // today

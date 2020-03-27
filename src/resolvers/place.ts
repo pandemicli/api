@@ -1,23 +1,10 @@
+import { Language } from '@googlemaps/google-maps-services-js/dist/common'
 import moment from 'moment'
-import {
-  Arg,
-  Args,
-  Authorized,
-  Ctx,
-  Mutation,
-  Query,
-  Resolver
-} from 'type-graphql'
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 
 import { Place, User } from '../models'
 import { PlaceService } from '../services'
-import {
-  CheckInArgs,
-  GooglePlace,
-  PlaceInput,
-  PlaceSearchArgs,
-  UpdatePlaceArgs
-} from '../types/graphql'
+import { GooglePlace, LocationPointInput, PlaceInput } from '../types/graphql'
 
 @Resolver(Place)
 export class PlaceResolver {
@@ -49,7 +36,8 @@ export class PlaceResolver {
   @Authorized()
   updatePlace(
     @Ctx('user') user: User,
-    @Args() { id, place }: UpdatePlaceArgs
+    @Arg('id') id: string,
+    @Arg('place') place: PlaceInput
   ): Promise<Place> {
     return this.service.update(user, id, place)
   }
@@ -76,7 +64,8 @@ export class PlaceResolver {
   @Authorized()
   toggleCheckIn(
     @Ctx('user') user: User,
-    @Args() { date, id }: CheckInArgs
+    @Arg('id') id: string,
+    @Arg('date') date: string
   ): Promise<boolean> {
     return this.service.toggleCheckIn(user, id, date)
   }
@@ -84,7 +73,15 @@ export class PlaceResolver {
   @Query(() => [GooglePlace])
   @Authorized()
   searchPlaces(
-    @Args() { language, location, query }: PlaceSearchArgs
+    @Arg('query') query: string,
+    @Arg('language', () => String, {
+      defaultValue: 'en'
+    })
+    language: Language,
+    @Arg('location', {
+      nullable: true
+    })
+    location?: LocationPointInput
   ): Promise<GooglePlace[]> {
     return this.service.searchPlaces(language, query, location)
   }

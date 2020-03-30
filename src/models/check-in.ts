@@ -1,4 +1,10 @@
-import { getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose'
+import {
+  getModelForClass,
+  index,
+  modelOptions,
+  prop,
+  Ref
+} from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { Field, ObjectType } from 'type-graphql'
 
@@ -11,6 +17,18 @@ import { User } from './user'
     timestamps: true
   }
 })
+@index(
+  {
+    user: 1,
+    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
+    place: 1,
+    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
+    checkedInAt: 1
+  },
+  {
+    unique: true
+  }
+)
 export class CheckIn extends TimeStamps {
   @Field(() => Place)
   @prop({

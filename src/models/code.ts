@@ -1,4 +1,9 @@
-import { getModelForClass, modelOptions, prop } from '@typegoose/typegoose'
+import {
+  getModelForClass,
+  index,
+  modelOptions,
+  prop
+} from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 
 @modelOptions({
@@ -6,6 +11,14 @@ import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
     timestamps: true
   }
 })
+@index(
+  {
+    code: 1
+  },
+  {
+    unique: true
+  }
+)
 export class Code extends TimeStamps {
   @prop({
     required: true

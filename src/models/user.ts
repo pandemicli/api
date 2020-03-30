@@ -1,6 +1,7 @@
 import {
   arrayProp,
   getModelForClass,
+  index,
   modelOptions,
   prop,
   Ref
@@ -18,6 +19,14 @@ import { Place } from './place'
     timestamps: true
   }
 })
+@index(
+  {
+    phone: 1
+  },
+  {
+    unique: true
+  }
+)
 export class User extends TimeStamps {
   @Field(() => ID)
   id!: string

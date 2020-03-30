@@ -1,6 +1,7 @@
 import {
   arrayProp,
   getModelForClass,
+  index,
   modelOptions,
   prop,
   Ref
@@ -16,6 +17,9 @@ import { User } from './user'
   schemaOptions: {
     timestamps: true
   }
+})
+@index({
+  user: 1
 })
 export class Place extends TimeStamps {
   @Field(() => ID)

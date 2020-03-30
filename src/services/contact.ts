@@ -135,46 +135,35 @@ export class ContactService {
 
   async sync(user: User, data: ContactInput[]): Promise<Contact[]> {
     const contacts = await Promise.all(
-      data.map(({ deviceId, name, phone }) =>
-        ContactModel.findOneAndUpdate(
+      data.map((contact) => {
+        const { deviceId } = contact
+
+        return ContactModel.findOneAndUpdate(
           {
             deviceId,
             user
           },
-          {
-            name,
-            phone
-          },
+          contact,
           {
             new: true,
             upsert: true
           }
         )
-      )
+      })
     )
 
     return contacts
   }
 
-  async add(user: User, code: string): Promise<Contact> {
-    const otherUser = await UserModel.findOne({
+  async add(code: string): Promise<User> {
+    const user = await UserModel.findOne({
       code
     })
 
-    if (!otherUser) {
+    if (!user) {
       throw new Error('Invalid code')
     }
 
-    const { name, phone } = otherUser
-
-    const contact = await ContactModel.create({
-      name,
-      phone,
-      user
-    })
-
-    contact.interactedToday = false
-
-    return contact
+    return user
   }
 }

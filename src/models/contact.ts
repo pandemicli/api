@@ -33,15 +33,18 @@ export class Contact extends TimeStamps {
   @prop()
   phone?: string
 
+  @Field({
+    nullable: true
+  })
+  @prop()
+  phoneHash?: string
+
   @Field()
   @prop({
     default: false
   })
   favorite?: boolean
 
-  @Field({
-    nullable: true
-  })
   @prop()
   deviceId?: string
 

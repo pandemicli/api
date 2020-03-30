@@ -4,7 +4,7 @@ import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 
 import { Place, User } from '../models'
 import { PlaceService } from '../services'
-import { GooglePlace, LocationPointInput, PlaceInput } from '../types/graphql'
+import { GooglePlace, PlaceInput } from '../types/graphql'
 
 @Resolver(Place)
 export class PlaceResolver {
@@ -78,11 +78,15 @@ export class PlaceResolver {
       defaultValue: 'en'
     })
     language: Language,
-    @Arg('location', {
+    @Arg('latitude', {
       nullable: true
     })
-    location?: LocationPointInput
+    latitude?: number,
+    @Arg('longitude', {
+      nullable: true
+    })
+    longitude?: number
   ): Promise<GooglePlace[]> {
-    return this.service.searchPlaces(language, query, location)
+    return this.service.searchPlaces(language, query, latitude, longitude)
   }
 }

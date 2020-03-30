@@ -8,7 +8,6 @@ import {
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { Field, ID, ObjectType } from 'type-graphql'
 
-import { LocationPoint } from '../types/graphql'
 import { CheckIn } from './check-in'
 import { User } from './user'
 
@@ -34,20 +33,41 @@ export class Place extends TimeStamps {
   })
   favorite?: boolean
 
-  @Field(() => LocationPoint, {
+  @Field({
     nullable: true
   })
   @prop()
-  location?: {
-    latitude: number
-    longitude: number
-  }
+  latitude?: string
+
+  @Field({
+    nullable: true
+  })
+  @prop()
+  latitudeHash?: string
+
+  @Field({
+    nullable: true
+  })
+  @prop()
+  longitude?: string
+
+  @Field({
+    nullable: true
+  })
+  @prop()
+  longitudeHash?: string
 
   @Field({
     nullable: true
   })
   @prop()
   googlePlaceId?: string
+
+  @Field({
+    nullable: true
+  })
+  @prop()
+  googlePlaceIdHash?: string
 
   @Field(() => User)
   @prop({

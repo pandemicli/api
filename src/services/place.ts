@@ -7,7 +7,8 @@ import { Service } from 'typedi'
 
 import { helpers } from '../lib'
 import { CheckInModel, Place, PlaceModel, User } from '../models'
-import { GooglePlace, LocationPoint, PlaceInput } from '../types/graphql'
+import { GooglePlace, PlaceInput } from '../types/graphql'
+
 @Service()
 export class PlaceService {
   async places(user: User, date: string): Promise<Place[]> {
@@ -129,7 +130,8 @@ export class PlaceService {
   async searchPlaces(
     language: Language,
     query: string,
-    location?: LocationPoint
+    latitude?: number,
+    longitude?: number
   ): Promise<GooglePlace[]> {
     const client = new Client()
 
@@ -141,9 +143,7 @@ export class PlaceService {
       }
     }
 
-    if (location) {
-      const { latitude, longitude } = location
-
+    if (latitude && longitude) {
       options.params.location = `${latitude},${longitude}`
     }
 

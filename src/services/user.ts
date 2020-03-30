@@ -35,9 +35,8 @@ export class UserService {
     return true
   }
 
-  async signUp(email: string, name: string, phone: string): Promise<boolean> {
+  async signUp(name: string, phone: string): Promise<boolean> {
     await UserModel.create({
-      email,
       name,
       phone
     })

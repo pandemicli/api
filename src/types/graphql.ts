@@ -4,24 +4,6 @@ import { Contact, Place, User } from '../models'
 
 // location
 
-@InputType()
-export class LocationPointInput {
-  @Field()
-  latitude!: number
-
-  @Field()
-  longitude!: number
-}
-
-@ObjectType()
-export class LocationPoint {
-  @Field()
-  latitude!: number
-
-  @Field()
-  longitude!: number
-}
-
 @ObjectType()
 export class GooglePlace {
   @Field()
@@ -63,6 +45,11 @@ export class ContactInput implements Partial<Contact> {
   @Field({
     nullable: true
   })
+  phoneHash?: string
+
+  @Field({
+    nullable: true
+  })
   deviceId?: string
 }
 
@@ -76,12 +63,32 @@ export class PlaceInput implements Partial<Place> {
   @Field({
     nullable: true
   })
-  location?: LocationPointInput
+  latitude?: string
+
+  @Field({
+    nullable: true
+  })
+  latitudeHash?: string
+
+  @Field({
+    nullable: true
+  })
+  longitude?: string
+
+  @Field({
+    nullable: true
+  })
+  longitudeHash?: string
 
   @Field({
     nullable: true
   })
   googlePlaceId?: string
+
+  @Field({
+    nullable: true
+  })
+  googlePlaceIdHash?: string
 }
 
 // today

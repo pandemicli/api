@@ -78,12 +78,9 @@ export class ContactResolver {
     return this.service.sync(user, contacts)
   }
 
-  @Mutation(() => Contact)
+  @Mutation(() => User)
   @Authorized()
-  addContact(
-    @Ctx('user') user: User,
-    @Arg('code') code: string
-  ): Promise<Contact> {
-    return this.service.add(user, code)
+  addContact(@Arg('code') code: string): Promise<User> {
+    return this.service.add(code)
   }
 }

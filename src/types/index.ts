@@ -7,8 +7,3 @@ export interface Context {
 export interface AuthToken {
   userId: string
 }
-
-export interface LocationPoint {
-  latitude: number
-  longitude: number
-}

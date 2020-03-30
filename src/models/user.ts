@@ -39,13 +39,6 @@ export class User extends TimeStamps {
     required: true,
     unique: true
   })
-  email!: string
-
-  @Field()
-  @prop({
-    required: true,
-    unique: true
-  })
   phone!: string
 
   @arrayProp({

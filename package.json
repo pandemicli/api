@@ -23,6 +23,7 @@
     "moment": "^2.24.0",
     "mongoose": "^5.9.6",
     "shortid": "^2.2.15",
+    "twilio": "^3.41.1",
     "type-graphql": "^0.17.6",
     "typedi": "^0.8.0"
   },

@@ -1,2 +1,4 @@
-export { auth, authChecker, Roles } from './auth'
+export { auth, authChecker } from './auth'
+
 export { helpers } from './helpers'
+export { phoneLib } from './phone'

@@ -8,10 +8,6 @@ import { AuthChecker } from 'type-graphql'
 import { User, UserModel } from '../models'
 import { AuthToken, Context } from '../types'
 
-export enum Roles {
-  OWNER
-}
-
 export const authChecker: AuthChecker<Context, number> = async ({
   context: { user }
 }): Promise<boolean> => !!user

@@ -5,5 +5,9 @@ declare namespace NodeJS {
     TOKEN_SECRET: string
 
     GOOGLE_API_KEY: string
+
+    TWILIO_ACCOUNT_ID: string
+    TWILIO_AUTH_TOKEN: string
+    TWILIO_NUMBER: string
   }
 }

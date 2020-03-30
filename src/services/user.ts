@@ -1,7 +1,7 @@
 import { random } from 'lodash'
 import { Service } from 'typedi'
 
-import { auth } from '../lib'
+import { auth, phoneLib } from '../lib'
 import { CodeModel, UserModel } from '../models'
 import { AuthResult } from '../types/graphql'
 
@@ -30,7 +30,7 @@ export class UserService {
       }
     )
 
-    // send sms
+    await phoneLib.sendVerificationCode(phone, code)
 
     return true
   }
@@ -56,7 +56,7 @@ export class UserService {
       }
     )
 
-    // send sms
+    await phoneLib.sendVerificationCode(phone, code)
 
     return true
   }

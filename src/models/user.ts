@@ -50,6 +50,12 @@ export class User extends TimeStamps {
   })
   phone!: string
 
+  @Field()
+  @prop({
+    default: false
+  })
+  covid19Positive!: boolean
+
   @arrayProp({
     foreignField: 'user',
     localField: '_id',

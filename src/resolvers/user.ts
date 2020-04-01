@@ -31,4 +31,9 @@ export class UserResolver {
   verify(@Arg('code') code: string): Promise<AuthResult> {
     return this.service.verify(code)
   }
+
+  @Mutation(() => Boolean)
+  toggleCovid19Positive(@Ctx('user') user: User): Promise<boolean> {
+    return this.service.toggleCovid19Positive(user)
+  }
 }

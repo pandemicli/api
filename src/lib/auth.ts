@@ -41,7 +41,7 @@ class Auth {
       throw new AuthenticationError('Invalid token')
     }
 
-    const user = await UserModel.findById(userId).select('+password')
+    const user = await UserModel.findById(userId)
 
     if (!user) {
       throw new AuthenticationError('User not found')

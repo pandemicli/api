@@ -2,7 +2,7 @@ import { random } from 'lodash'
 import { Service } from 'typedi'
 
 import { auth, phoneLib } from '../lib'
-import { CodeModel, UserModel } from '../models'
+import { CodeModel, User, UserModel } from '../models'
 import { AuthResult } from '../types/graphql'
 
 @Service()
@@ -85,5 +85,15 @@ export class UserService {
       token,
       user
     }
+  }
+
+  async toggleCovid19Positive(user: User): Promise<boolean> {
+    const covid19Positive = !user.covid19Positive
+
+    await UserModel.findByIdAndUpdate(user.id, {
+      covid19Positive
+    })
+
+    return covid19Positive
   }
 }

@@ -28,18 +28,12 @@ export class TodayService {
       contact: {
         $in: contacts.map(({ id }) => id)
       },
-      interactedAt: {
-        $gte: moment(date).startOf('day').toDate(),
-        $lt: moment(date).endOf('day').toDate()
-      },
+      interactedAt: moment(date).startOf('day').toDate(),
       user
     })
 
     const checkIns = await CheckInModel.find({
-      checkedInAt: {
-        $gte: moment(date).startOf('day').toDate(),
-        $lt: moment(date).endOf('day').toDate()
-      },
+      checkedInAt: moment(date).startOf('day').toDate(),
       place: {
         $in: places.map(({ id }) => id)
       },

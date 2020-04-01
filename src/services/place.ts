@@ -17,10 +17,7 @@ export class PlaceService {
     })
 
     const checkIns = await CheckInModel.find({
-      checkedInAt: {
-        $gte: moment(date).startOf('day').toDate(),
-        $lt: moment(date).endOf('day').toDate()
-      },
+      checkedInAt: moment(date).startOf('day').toDate(),
       place: {
         $in: places.map(({ id }) => id)
       },
@@ -66,7 +63,7 @@ export class PlaceService {
     }
 
     const checkIn = await CheckInModel.findOne({
-      checkedInAt: moment().toDate(),
+      checkedInAt: moment().startOf('day').toDate(),
       place
     })
 

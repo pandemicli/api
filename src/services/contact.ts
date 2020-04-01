@@ -22,10 +22,7 @@ export class ContactService {
       contact: {
         $in: contacts.map(({ id }) => id)
       },
-      interactedAt: {
-        $gte: moment(date).startOf('day').toDate(),
-        $lt: moment(date).endOf('day').toDate()
-      },
+      interactedAt: moment(date).startOf('day').toDate(),
       user
     })
 
@@ -69,7 +66,7 @@ export class ContactService {
 
     const interaction = await InteractionModel.findOne({
       contact,
-      interactedAt: moment().toDate()
+      interactedAt: moment().startOf('day').toDate()
     })
 
     contact.interactedToday = !!interaction

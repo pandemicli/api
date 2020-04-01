@@ -15,7 +15,7 @@ export class PlaceResolver {
   places(
     @Ctx('user') user: User,
     @Arg('date', {
-      defaultValue: moment().toISOString(),
+      defaultValue: moment().startOf('day').toISOString(),
       nullable: true
     })
     date: string

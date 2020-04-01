@@ -1,4 +1,5 @@
 export { ContactService } from './contact'
 export { PlaceService } from './place'
+export { SymptomService } from './symptom'
 export { TodayService } from './today'
 export { UserService } from './user'

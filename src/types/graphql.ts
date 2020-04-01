@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from 'type-graphql'
+import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql'
 
 import { Contact, Place, User } from '../models'
 
@@ -91,6 +91,34 @@ export class PlaceInput implements Partial<Place> {
   googlePlaceIdHash?: string
 }
 
+// symptoms
+
+/* eslint-disable @typescript-eslint/camelcase */
+export enum SymptomName {
+  aches_and_pains = 'aches_and_pains',
+  diarrhea = 'diarrhea',
+  dry_cough = 'dry_cough',
+  fever = 'fever',
+  nasal_congestion = 'nasal_congestion',
+  runny_nose = 'runny_nose',
+  sore_throat = 'sore_throat',
+  tiredness = 'tiredness'
+}
+/* eslint-enable @typescript-eslint/camelcase */
+
+@ObjectType()
+export class Symptom {
+  @Field(() => SymptomName)
+  name!: SymptomName
+
+  @Field()
+  experiencedToday?: boolean
+}
+
+registerEnumType(SymptomName, {
+  name: 'SymptomName'
+})
+
 // today
 
 @ObjectType()
@@ -100,4 +128,7 @@ export class TodayFeed {
 
   @Field(() => [Place])
   places!: Place[]
+
+  @Field(() => [Symptom])
+  symptoms!: Symptom[]
 }

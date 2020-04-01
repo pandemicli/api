@@ -7,9 +7,10 @@ import {
   ContactModel,
   InteractionModel,
   PlaceModel,
+  SymptomModel,
   User
 } from '../models'
-import { TodayFeed } from '../types/graphql'
+import { SymptomName, TodayFeed } from '../types/graphql'
 
 @Service()
 export class TodayService {
@@ -24,19 +25,26 @@ export class TodayService {
       user
     })
 
+    const day = moment(date).startOf('day').toDate()
+
     const interactions = await InteractionModel.find({
       contact: {
         $in: contacts.map(({ id }) => id)
       },
-      interactedAt: moment(date).startOf('day').toDate(),
+      interactedAt: day,
       user
     })
 
     const checkIns = await CheckInModel.find({
-      checkedInAt: moment(date).startOf('day').toDate(),
+      checkedInAt: day,
       place: {
         $in: places.map(({ id }) => id)
       },
+      user
+    })
+
+    const symptoms = await SymptomModel.find({
+      experiencedAt: day,
       user
     })
 
@@ -58,7 +66,11 @@ export class TodayService {
         )
 
         return place
-      })
+      }),
+      symptoms: Object.keys(SymptomName).map((name) => ({
+        experiencedToday: !!symptoms.find((symptom) => symptom.name === name),
+        name: name as SymptomName
+      }))
     }
   }
 }

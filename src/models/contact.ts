@@ -35,6 +35,18 @@ export class Contact extends TimeStamps {
     nullable: true
   })
   @prop()
+  email?: string
+
+  @Field({
+    nullable: true
+  })
+  @prop()
+  emailHash?: string
+
+  @Field({
+    nullable: true
+  })
+  @prop()
   phone?: string
 
   @Field({
@@ -50,7 +62,7 @@ export class Contact extends TimeStamps {
   favorite?: boolean
 
   @prop()
-  deviceId?: string
+  deviceIdHash?: string
 
   @Field(() => User)
   @prop({

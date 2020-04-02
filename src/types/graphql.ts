@@ -40,6 +40,16 @@ export class ContactInput implements Partial<Contact> {
   @Field({
     nullable: true
   })
+  email?: string
+
+  @Field({
+    nullable: true
+  })
+  emailHash?: string
+
+  @Field({
+    nullable: true
+  })
   phone?: string
 
   @Field({
@@ -50,7 +60,7 @@ export class ContactInput implements Partial<Contact> {
   @Field({
     nullable: true
   })
-  deviceId?: string
+  deviceIdHash?: string
 }
 
 // places

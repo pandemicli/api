@@ -133,11 +133,11 @@ export class ContactService {
   async sync(user: User, data: ContactInput[]): Promise<Contact[]> {
     const contacts = await Promise.all(
       data.map((contact) => {
-        const { deviceId } = contact
+        const { deviceIdHash } = contact
 
         return ContactModel.findOneAndUpdate(
           {
-            deviceId,
+            deviceIdHash,
             user
           },
           contact,

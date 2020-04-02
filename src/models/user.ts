@@ -21,6 +21,14 @@ import { Place } from './place'
 })
 @index(
   {
+    email: 1
+  },
+  {
+    unique: true
+  }
+)
+@index(
+  {
     phone: 1
   },
   {
@@ -45,10 +53,25 @@ export class User extends TimeStamps {
 
   @Field()
   @prop({
-    required: true,
-    unique: true
+    required: true
+  })
+  email!: string
+
+  @prop({
+    default: false
+  })
+  emailVerified!: boolean
+
+  @Field()
+  @prop({
+    required: true
   })
   phone!: string
+
+  @prop({
+    default: false
+  })
+  phoneVerified!: boolean
 
   @Field()
   @prop({

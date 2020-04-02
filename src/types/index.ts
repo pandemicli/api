@@ -7,3 +7,8 @@ export interface Context {
 export interface AuthToken {
   userId: string
 }
+
+export enum CodeType {
+  email = 'email',
+  phone = 'phone'
+}

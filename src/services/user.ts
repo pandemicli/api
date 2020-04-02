@@ -1,8 +1,10 @@
 import { random } from 'lodash'
+import { MongooseFilterQuery } from 'mongoose'
 import { Service } from 'typedi'
 
 import { auth, phoneLib } from '../lib'
 import { CodeModel, User, UserModel } from '../models'
+import { CodeType } from '../types'
 import { AuthResult } from '../types/graphql'
 
 @Service()
@@ -20,7 +22,8 @@ export class UserService {
 
     await CodeModel.findOneAndUpdate(
       {
-        phone
+        data: phone,
+        type: CodeType.phone
       },
       {
         code
@@ -35,8 +38,9 @@ export class UserService {
     return true
   }
 
-  async signUp(name: string, phone: string): Promise<boolean> {
+  async signUp(name: string, email: string, phone: string): Promise<boolean> {
     await UserModel.create({
+      email,
       name,
       phone
     })
@@ -45,7 +49,21 @@ export class UserService {
 
     await CodeModel.findOneAndUpdate(
       {
-        phone
+        data: phone,
+        type: CodeType.phone
+      },
+      {
+        code
+      },
+      {
+        upsert: true
+      }
+    )
+
+    await CodeModel.findOneAndUpdate(
+      {
+        data: email,
+        type: CodeType.email
       },
       {
         code
@@ -56,6 +74,7 @@ export class UserService {
     )
 
     await phoneLib.sendVerificationCode(phone, code)
+    // TODO: send email
 
     return true
   }
@@ -69,12 +88,30 @@ export class UserService {
       throw new Error('Invalid code')
     }
 
-    const user = await UserModel.findOne({
-      phone: exists.phone
-    })
+    const query: MongooseFilterQuery<User> = {}
+
+    if (exists.type === CodeType.email) {
+      query.email = exists.data
+    } else if (exists.type === CodeType.phone) {
+      query.phone = exists.data
+    } else {
+      throw new Error('Invalid code')
+    }
+
+    const user = await UserModel.findOne(query)
 
     if (!user) {
       throw new Error('User not found')
+    }
+
+    if (exists.type === CodeType.email && !user.emailVerified) {
+      user.emailVerified = true
+
+      await user.save()
+    } else if (exists.type === CodeType.phone && !user.phoneVerified) {
+      user.phoneVerified = true
+
+      await user.save()
     }
 
     await exists.remove()

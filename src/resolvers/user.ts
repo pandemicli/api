@@ -22,9 +22,10 @@ export class UserResolver {
   @Mutation(() => Boolean)
   signUp(
     @Arg('name') name: string,
+    @Arg('email') email: string,
     @Arg('phone') phone: string
   ): Promise<boolean> {
-    return this.service.signUp(name, phone)
+    return this.service.signUp(name, email, phone)
   }
 
   @Mutation(() => AuthResult)

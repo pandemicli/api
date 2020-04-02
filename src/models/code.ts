@@ -6,6 +6,8 @@ import {
 } from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 
+import { CodeType } from '../types'
+
 @modelOptions({
   schemaOptions: {
     timestamps: true
@@ -13,7 +15,8 @@ import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 })
 @index(
   {
-    code: 1
+    code: 1,
+    data: 1
   },
   {
     unique: true
@@ -23,7 +26,13 @@ export class Code extends TimeStamps {
   @prop({
     required: true
   })
-  phone!: string
+  data!: string
+
+  @prop({
+    enum: CodeType,
+    required: true
+  })
+  type!: string
 
   @prop({
     required: true

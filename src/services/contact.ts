@@ -45,6 +45,8 @@ export class ContactService {
 
     contact.interactedToday = false
 
+    // TODO: email and text contact
+
     return contact
   }
 
@@ -106,14 +108,11 @@ export class ContactService {
     id: string,
     date: string
   ): Promise<boolean> {
-    const interaction = await InteractionModel.findOneAndUpdate(
-      {
-        contact: id,
-        interactedAt: moment(date).startOf('day').toDate(),
-        user
-      },
-      {}
-    )
+    const interaction = await InteractionModel.findOne({
+      contact: id,
+      interactedAt: moment(date).startOf('day').toDate(),
+      user
+    })
 
     if (interaction) {
       await interaction.remove()

@@ -100,14 +100,11 @@ export class PlaceService {
   }
 
   async toggleCheckIn(user: User, id: string, date: string): Promise<boolean> {
-    const interaction = await CheckInModel.findOneAndUpdate(
-      {
-        checkedInAt: moment(date).startOf('day').toDate(),
-        place: id,
-        user
-      },
-      {}
-    )
+    const interaction = await CheckInModel.findOne({
+      checkedInAt: moment(date).startOf('day').toDate(),
+      place: id,
+      user
+    })
 
     if (interaction) {
       await interaction.remove()

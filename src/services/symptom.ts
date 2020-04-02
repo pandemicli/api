@@ -11,14 +11,11 @@ export class SymptomService {
     name: SymptomName,
     date: string
   ): Promise<boolean> {
-    const existing = await SymptomModel.findOneAndUpdate(
-      {
-        experiencedAt: moment(date).startOf('day').toDate(),
-        name,
-        user
-      },
-      {}
-    )
+    const existing = await SymptomModel.findOne({
+      experiencedAt: moment(date).startOf('day').toDate(),
+      name,
+      user
+    })
 
     if (existing) {
       await existing.remove()

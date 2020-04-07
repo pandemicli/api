@@ -4,7 +4,7 @@ const { NEW_RELIC_LICENSE_KEY } = process.env
 
 exports.config = {
   allow_all_headers: true,
-  app_name: ['My Application'],
+  app_name: ['Pandemic.li'],
   attributes: {
     exclude: [
       'request.headers.cookie',

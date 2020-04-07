@@ -3,6 +3,7 @@ declare namespace NodeJS {
     MONGO_URI: string
 
     TOKEN_SECRET: string
+    NEW_RELIC_LICENSE_KEY: string
 
     GOOGLE_API_KEY: string
 

@@ -1,6 +1,7 @@
 const { MONGO_URI, PORT } = process.env
 
 import 'reflect-metadata'
+import 'newrelic'
 
 import { ApolloServer } from 'apollo-server'
 import { connect } from 'mongoose'

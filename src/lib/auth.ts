@@ -1,7 +1,7 @@
 const { TOKEN_SECRET } = process.env
 
 import { AuthenticationError } from 'apollo-server'
-import { Request } from 'express'
+import { FastifyRequest } from 'fastify'
 import { sign, verify } from 'jsonwebtoken'
 import { AuthChecker } from 'type-graphql'
 
@@ -22,14 +22,14 @@ class Auth {
     )
   }
 
-  async getUser(req: Request): Promise<User | undefined> {
-    const auth = req.get('authorization')
+  async getUser(request: FastifyRequest): Promise<User | undefined> {
+    const authorization = request.headers.authorization
 
-    if (!auth) {
+    if (!authorization) {
       return
     }
 
-    const token = auth.substr(7)
+    const token = authorization.substr(7)
 
     if (!token) {
       throw new AuthenticationError('Invalid token')

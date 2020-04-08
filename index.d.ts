@@ -10,5 +10,9 @@ declare namespace NodeJS {
     TWILIO_ACCOUNT_ID: string
     TWILIO_AUTH_TOKEN: string
     TWILIO_NUMBER: string
+
+    VIRGIL_APP_ID: string
+    VIRGIL_APP_KEY_ID: string
+    VIRGIL_APP_KEY: string
   }
 }

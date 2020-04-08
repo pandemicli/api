@@ -1,18 +1,57 @@
-const { MONGO_URI, PORT } = process.env
+const {
+  MONGO_URI,
+  PORT,
+  VIRGIL_APP_ID,
+  VIRGIL_APP_KEY,
+  VIRGIL_APP_KEY_ID
+} = process.env
 
 import 'reflect-metadata'
 import 'newrelic'
 
-import { ApolloServer } from 'apollo-server'
+import { ApolloServer, AuthenticationError } from 'apollo-server-fastify'
+import fastify, { FastifyRequest } from 'fastify'
 import { connect } from 'mongoose'
 import { buildSchema } from 'type-graphql'
 import { Container } from 'typedi'
+import {
+  initCrypto,
+  VirgilAccessTokenSigner,
+  VirgilCrypto
+} from 'virgil-crypto'
+import { JwtGenerator } from 'virgil-sdk'
 
 import { auth, authChecker } from './lib'
 import { resolvers } from './resolvers'
 import { Context } from './types'
 
 const main = async (): Promise<void> => {
+  const server = fastify()
+
+  server.get('/virgil-jwt', async (request) => {
+    const user = await auth.getUser(request)
+
+    if (!user) {
+      throw new AuthenticationError('Invalid token')
+    }
+
+    await initCrypto()
+
+    const virgilCrypto = new VirgilCrypto()
+
+    const generator = new JwtGenerator({
+      accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+      apiKey: virgilCrypto.importPrivateKey(VIRGIL_APP_KEY),
+      apiKeyId: VIRGIL_APP_KEY_ID,
+      appId: VIRGIL_APP_ID,
+      millisecondsToLive: 20 * 60 * 1000
+    })
+
+    return {
+      virgilToken: generator.generateToken(user.id).toString()
+    }
+  })
+
   await connect(MONGO_URI, {
     useCreateIndex: true,
     useFindAndModify: false,
@@ -27,16 +66,14 @@ const main = async (): Promise<void> => {
     resolvers
   })
 
-  const server = new ApolloServer({
-    async context({ req }): Promise<Context> {
-      const user = await auth.getUser(req)
-
-      return {
-        user
-      }
-    },
+  const graphql = new ApolloServer({
+    context: async (request: FastifyRequest): Promise<Context> => ({
+      user: await auth.getUser(request)
+    }),
     schema
   })
+
+  server.register(graphql.createHandler())
 
   await server.listen({
     port: Number(PORT)

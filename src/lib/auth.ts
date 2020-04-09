@@ -1,6 +1,7 @@
 const { TOKEN_SECRET } = process.env
 
 import { AuthenticationError } from 'apollo-server'
+import { compare, hash } from 'bcrypt'
 import { FastifyRequest } from 'fastify'
 import { sign, verify } from 'jsonwebtoken'
 import { AuthChecker } from 'type-graphql'
@@ -20,6 +21,14 @@ class Auth {
       },
       TOKEN_SECRET
     )
+  }
+
+  signPassword(password: string): Promise<string> {
+    return hash(password, 10)
+  }
+
+  checkPassword(password: string, user: User): Promise<boolean> {
+    return compare(password, user.password)
   }
 
   async getUser(request: FastifyRequest): Promise<User | undefined> {

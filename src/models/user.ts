@@ -58,6 +58,11 @@ export class User extends TimeStamps {
   email!: string
 
   @prop({
+    required: true
+  })
+  password!: string
+
+  @prop({
     default: false
   })
   emailVerified!: boolean

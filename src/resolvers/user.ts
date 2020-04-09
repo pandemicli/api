@@ -15,17 +15,21 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  signIn(@Arg('phone') phone: string): Promise<boolean> {
-    return this.service.signIn(phone)
+  signIn(
+    @Arg('email') email: string,
+    @Arg('password') password: string
+  ): Promise<boolean> {
+    return this.service.signIn(email, password)
   }
 
   @Mutation(() => Boolean)
   signUp(
     @Arg('name') name: string,
     @Arg('email') email: string,
+    @Arg('password') password: string,
     @Arg('phone') phone: string
   ): Promise<boolean> {
-    return this.service.signUp(name, email, phone)
+    return this.service.signUp(name, email, password, phone)
   }
 
   @Mutation(() => AuthResult)
@@ -34,6 +38,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @Authorized()
   toggleCovid19Positive(@Ctx('user') user: User): Promise<boolean> {
     return this.service.toggleCovid19Positive(user)
   }

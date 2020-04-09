@@ -1,5 +1,4 @@
 import { random } from 'lodash'
-import { MongooseFilterQuery } from 'mongoose'
 import { Service } from 'typedi'
 
 import { auth, phoneLib } from '../lib'
@@ -9,20 +8,39 @@ import { AuthResult } from '../types/graphql'
 
 @Service()
 export class UserService {
-  async signIn(phone: string): Promise<boolean> {
+  async signIn(email: string, password: string): Promise<boolean> {
     const user = await UserModel.findOne({
-      phone
+      email
     })
 
     if (!user) {
       throw new Error('User not found')
     }
 
+    if (!(await auth.checkPassword(password, user))) {
+      throw new Error('Invalid password')
+    }
+
     const code = random(100000, 999999)
+
+    // await CodeModel.findOneAndUpdate(
+    //   {
+    //     data: user.email,
+    //     type: CodeType.email
+    //   },
+    //   {
+    //     code
+    //   },
+    //   {
+    //     upsert: true
+    //   }
+    // )
+
+    // // TODO: send email
 
     await CodeModel.findOneAndUpdate(
       {
-        data: phone,
+        data: user.phone,
         type: CodeType.phone
       },
       {
@@ -33,19 +51,42 @@ export class UserService {
       }
     )
 
-    await phoneLib.sendVerificationCode(phone, code)
+    await phoneLib.sendVerificationCode(user.phone, code)
 
     return true
   }
 
-  async signUp(name: string, email: string, phone: string): Promise<boolean> {
+  async signUp(
+    name: string,
+    email: string,
+    password: string,
+    phone: string
+  ): Promise<boolean> {
     await UserModel.create({
       email,
       name,
+      password: await auth.signPassword(password),
       phone
     })
 
-    const code = random(100000, 999999)
+    // const emailCode = random(100000, 999999)
+
+    // await CodeModel.findOneAndUpdate(
+    //   {
+    //     data: email,
+    //     type: CodeType.email
+    //   },
+    //   {
+    //     code: emailCode
+    //   },
+    //   {
+    //     upsert: true
+    //   }
+    // )
+
+    // // TODO: send email
+
+    const phoneCode = random(100000, 999999)
 
     await CodeModel.findOneAndUpdate(
       {
@@ -53,28 +94,14 @@ export class UserService {
         type: CodeType.phone
       },
       {
-        code
+        code: phoneCode
       },
       {
         upsert: true
       }
     )
 
-    await CodeModel.findOneAndUpdate(
-      {
-        data: email,
-        type: CodeType.email
-      },
-      {
-        code
-      },
-      {
-        upsert: true
-      }
-    )
-
-    await phoneLib.sendVerificationCode(phone, code)
-    // TODO: send email
+    await phoneLib.sendVerificationCode(phone, phoneCode)
 
     return true
   }
@@ -88,17 +115,9 @@ export class UserService {
       throw new Error('Invalid code')
     }
 
-    const query: MongooseFilterQuery<User> = {}
-
-    if (exists.type === CodeType.email) {
-      query.email = exists.data
-    } else if (exists.type === CodeType.phone) {
-      query.phone = exists.data
-    } else {
-      throw new Error('Invalid code')
-    }
-
-    const user = await UserModel.findOne(query)
+    const user = await UserModel.findOne({
+      [exists.type === CodeType.email ? 'phone' : 'email']: code
+    })
 
     if (!user) {
       throw new Error('User not found')

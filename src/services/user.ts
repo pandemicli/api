@@ -3,7 +3,16 @@ import { random } from 'lodash'
 import { Service } from 'typedi'
 
 import { auth, phoneLib } from '../lib'
-import { CodeModel, User, UserModel } from '../models'
+import {
+  CheckInModel,
+  CodeModel,
+  ContactModel,
+  InteractionModel,
+  PlaceModel,
+  SymptomModel,
+  User,
+  UserModel
+} from '../models'
 import { CodeType } from '../types'
 import { AuthResult } from '../types/graphql'
 
@@ -156,6 +165,39 @@ export class UserService {
     user.password = await auth.signPassword(newPassword)
 
     await user.save()
+
+    return true
+  }
+
+  async deleteAccount(
+    user: DocumentType<User>,
+    password: string
+  ): Promise<boolean> {
+    if (!(await auth.checkPassword(password, user))) {
+      throw new Error('Invalid password')
+    }
+
+    await ContactModel.deleteMany({
+      user
+    })
+
+    await PlaceModel.deleteMany({
+      user
+    })
+
+    await InteractionModel.deleteMany({
+      user
+    })
+
+    await CheckInModel.deleteMany({
+      user
+    })
+
+    await SymptomModel.deleteMany({
+      user
+    })
+
+    await user.remove()
 
     return true
   }

@@ -50,6 +50,15 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   @Authorized()
+  deleteAccount(
+    @Ctx('user') user: DocumentType<User>,
+    @Arg('password') password: string
+  ): Promise<boolean> {
+    return this.service.deleteAccount(user, password)
+  }
+
+  @Mutation(() => Boolean)
+  @Authorized()
   toggleCovid19Positive(@Ctx('user') user: User): Promise<boolean> {
     return this.service.toggleCovid19Positive(user)
   }

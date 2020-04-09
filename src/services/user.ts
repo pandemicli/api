@@ -1,3 +1,4 @@
+import { DocumentType } from '@typegoose/typegoose'
 import { random } from 'lodash'
 import { Service } from 'typedi'
 
@@ -141,6 +142,22 @@ export class UserService {
       token,
       user
     }
+  }
+
+  async changePassword(
+    user: DocumentType<User>,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<boolean> {
+    if (!(await auth.checkPassword(currentPassword, user))) {
+      throw new Error('Invalid password')
+    }
+
+    user.password = await auth.signPassword(newPassword)
+
+    await user.save()
+
+    return true
   }
 
   async toggleCovid19Positive(user: User): Promise<boolean> {

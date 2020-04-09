@@ -1,3 +1,4 @@
+import { DocumentType } from '@typegoose/typegoose'
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 
 import { User } from '../models'
@@ -35,6 +36,16 @@ export class UserResolver {
   @Mutation(() => AuthResult)
   verify(@Arg('code') code: string): Promise<AuthResult> {
     return this.service.verify(code)
+  }
+
+  @Mutation(() => Boolean)
+  @Authorized()
+  changePassword(
+    @Ctx('user') user: DocumentType<User>,
+    @Arg('currentPassword') currentPassword: string,
+    @Arg('newPassword') newPassword: string
+  ): Promise<boolean> {
+    return this.service.changePassword(user, currentPassword, newPassword)
   }
 
   @Mutation(() => Boolean)

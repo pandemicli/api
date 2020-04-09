@@ -116,7 +116,7 @@ export class UserService {
     }
 
     const user = await UserModel.findOne({
-      [exists.type === CodeType.email ? 'phone' : 'email']: code
+      [exists.type]: exists.data
     })
 
     if (!user) {

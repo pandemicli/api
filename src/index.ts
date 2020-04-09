@@ -26,7 +26,9 @@ import { resolvers } from './resolvers'
 import { Context } from './types'
 
 const main = async (): Promise<void> => {
-  const server = fastify()
+  const server = fastify({
+    bodyLimit: 1000 * 1000 * 5
+  })
 
   server.get('/virgil-jwt', async (request) => {
     const user = await auth.getUser(request)

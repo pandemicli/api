@@ -47,19 +47,7 @@ export class Place extends TimeStamps {
     nullable: true
   })
   @prop()
-  latitudeHash?: string
-
-  @Field({
-    nullable: true
-  })
-  @prop()
   longitude?: string
-
-  @Field({
-    nullable: true
-  })
-  @prop()
-  longitudeHash?: string
 
   @Field({
     nullable: true

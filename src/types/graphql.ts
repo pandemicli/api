@@ -78,17 +78,7 @@ export class PlaceInput implements Partial<Place> {
   @Field({
     nullable: true
   })
-  latitudeHash?: string
-
-  @Field({
-    nullable: true
-  })
   longitude?: string
-
-  @Field({
-    nullable: true
-  })
-  longitudeHash?: string
 
   @Field({
     nullable: true
